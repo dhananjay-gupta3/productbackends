@@ -24,7 +24,7 @@ if (!fs.existsSync(uploadDir)) {
 
 // Middleware
 app.use(cors({
-    origin: process.env.FRONTEND_URL,
+    origin: ''https://productfrontend-nine.vercel.app'',
     credentials: true
 }));
 app.use(helmet());
