@@ -10,12 +10,8 @@ require('dotenv').config();
 
 const app = express();
 
-// Serve static files
-app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
-
-
-// Connect to database
-connectDB();
+// Log the frontend origin for debugging
+console.log('FRONTEND_URL:', process.env.FRONTEND_URL);
 
 // Ensure upload directory exists
 const uploadDir = path.join(__dirname, 'public/uploads');
@@ -23,12 +19,26 @@ if (!fs.existsSync(uploadDir)) {
     fs.mkdirSync(uploadDir, { recursive: true });
 }
 
-// Middleware
-app.options('*', cors({
-  origin: process.env.FRONTEND_URL,
-  credentials: true,
+// Serve static files
+app.use('/uploads', express.static(uploadDir));
+
+// Connect to database
+connectDB();
+
+// CORS setup
+app.use(cors({
+    origin: process.env.FRONTEND_URL,
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true
 }));
 
+// Handle preflight requests
+app.options('*', cors({
+    origin: process.env.FRONTEND_URL,
+    credentials: true
+}));
+
+// Security & logging middleware
 app.use(helmet());
 app.use(morgan('dev'));
 app.use(express.json());
@@ -42,9 +52,14 @@ app.use('/api/votes', require('./routes/voteRoutes'));
 app.use('/api/users', require('./routes/userRoutes'));
 app.use('/api', require('./routes/commentRoutes'));
 
-// Health check route for Render or browser test
+// Health check
 app.get('/', (req, res) => {
     res.send('API is running 🚀');
+});
+
+// Catch-all route (Express 5 requires named wildcard)
+app.all('*catchall', (req, res) => {
+    res.status(404).json({ success: false, message: 'Route not found' });
 });
 
 // Error handler
@@ -53,5 +68,6 @@ app.use((err, req, res, next) => {
     res.status(500).json({ success: false, message: 'Something went wrong!' });
 });
 
+// Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
