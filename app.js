@@ -13,6 +13,7 @@ const app = express();
 // Serve static files
 app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
 
+
 // Connect to database
 connectDB();
 
@@ -24,7 +25,7 @@ if (!fs.existsSync(uploadDir)) {
 
 // Middleware
 app.use(cors({
-    origin: ''https://productfrontend-nine.vercel.app'',
+    origin: process.env.FRONTEND_URL,
     credentials: true
 }));
 app.use(helmet());
