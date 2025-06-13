@@ -25,7 +25,7 @@ connectDB();
 
 // Middleware
 app.use(cors({
-    origin: process.env.FRONTENT_URL, // Ensure this is NOT undefined
+    origin: process.env.FRONTEND_URL, // Ensure this is NOT undefined
     credentials: true
 }));
 
