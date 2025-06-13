@@ -10,9 +10,6 @@ require('dotenv').config();
 
 const app = express();
 
-// Log the frontend origin for debugging
-console.log('FRONTEND_URL:', process.env.FRONTEND_URL);
-
 // Ensure upload directory exists
 const uploadDir = path.join(__dirname, 'public/uploads');
 if (!fs.existsSync(uploadDir)) {
@@ -38,7 +35,7 @@ app.options('*', cors({
     credentials: true
 }));
 
-// Security & logging middleware
+// Middleware
 app.use(helmet());
 app.use(morgan('dev'));
 app.use(express.json());
@@ -57,8 +54,8 @@ app.get('/', (req, res) => {
     res.send('API is running 🚀');
 });
 
-// Catch-all route (Express 5 requires named wildcard)
-app.all('*catchall', (req, res) => {
+// Catch-all route (Express 5 compatible)
+app.use((req, res) => {
     res.status(404).json({ success: false, message: 'Route not found' });
 });
 
