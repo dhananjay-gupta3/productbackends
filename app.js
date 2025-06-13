@@ -11,7 +11,9 @@ require('dotenv').config();
 const app = express();
 
 // Serve static files
-app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
+app.use('/uploads', cors({
+  origin: process.env.FRONTEND_URL || 'https://productsfont.vercel.app'
+}), express.static(path.join(__dirname, 'public/uploads')));
 
 // Connect to database
 connectDB();
