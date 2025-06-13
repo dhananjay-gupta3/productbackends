@@ -24,11 +24,11 @@ if (!fs.existsSync(uploadDir)) {
 }
 
 // Middleware
-app.use(cors({
-    origin: process.env.FRONTEND_URL,
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    credentials: true
+app.options('*', cors({
+  origin: process.env.FRONTEND_URL,
+  credentials: true,
 }));
+
 app.use(helmet());
 app.use(morgan('dev'));
 app.use(express.json());
